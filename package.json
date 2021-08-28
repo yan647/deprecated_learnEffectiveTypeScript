@@ -4,6 +4,11 @@
   "main": "index.js",
   "repository": "https://github.com/yan647/learnEffectiveTypeScript.git",
   "license": "MIT",
+  "scripts": {
+    "dev": "tsc",
+    "start": "npx tsc"
+
+  },
   "dependencies": {
     "typescript": "^4.3.5"
   }

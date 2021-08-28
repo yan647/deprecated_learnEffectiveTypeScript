@@ -5,13 +5,13 @@ interface myArray<T> {
 
 const xs = [1, 2, 3];
 const x0 = xs[0];
-const x1 = xs['1'];
+// const x1 = xs['1'];
+//
+// function get<T>(array: Array<T>, k: string): T {
+//   return array[k];
+// }
 
-function get<T>(array: Array<T>, k: string): T {
-  return array[k];
-}
-
-console.log(get(xs, '1'));
+// console.log(get(xs, '1'));
 
 for (const x of xs) {
   console.log(typeof x);//number

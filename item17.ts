@@ -6,7 +6,7 @@ function arraySum(arr: readonly number[]) {
   return sum;
 }
 
-function printTriangles(n) {
+function printTriangles(n:number) {
   const nums = [];
   for (let i = 0; i < n; i++) {
     nums.push(i);
