@@ -125,6 +125,54 @@ function calculateArea(shape: Shape) {
 在type Shape =Square | Rectangle 中的Rectangle指的是类型，而shape instanceof Rectangle 中的Rectangle指的是值。这个区别对于理解是很重要的，但是可能很微妙，详情参见Item8。
 
 ## 类型操作不能影响运行时的值
+假设你有一个值，可能是字符串也可能是数字，你希望将它标准化，这样它总是一个数字。这里有个类型检查器接受的错误尝试：
+
+```TypeScript
+function asNumber(val: number | string): number {
+  return val as number;
+}
+```
+
+通过查看生成的JavaScript，可以更清晰的看到这个函数到底是做什么的：
+
+```javascript
+function asNumber(val) {
+  return val;
+}
+```
+
+没有发生任何改变。as number 是类型操作，所以它不能影响代码的运行时行为。为了标准化这个值，你必须检查它的运行时类型，并使用JavaScript constructs进行转换。
+
+```TypeScript
+function asNumber(val: number | string): number {
+  return typeof(val) === 'string' ? Number(val) : val;
+}
+```
+
+（as number是类型断言，更多关于何时使用它更适合的详细信息，参见Item 9）
+
+## 运行时类型可能与声明的类型不同
+
+这个函数是否会命中最终的console.log？
+
+```TypeScript
+function setLightSwitch(value: boolean) {
+  switch (value) {
+    case true:
+      turnLightOn();
+      break;
+    case false:
+      turnLightOff();
+      break;
+    default:
+      console.log(`I'm afraid I can't do that.`);
+  }
+}
+```
+
+
+
+
 
 
 
