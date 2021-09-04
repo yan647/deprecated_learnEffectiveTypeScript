@@ -170,6 +170,69 @@ function setLightSwitch(value: boolean) {
 }
 ```
 
+TypeScript经常标记死代码，但是即使设置了strict选项，它也不会提示这一点。你应该如何命中这个分支呢？
+
+关键是记住boolean类型是已声明的类型。因为它是TypeScript类型，因此它在运行时就消失了。在JavaScript代码中，用户可能无意中使用类似"ON"的值调用setLightSwitch。在纯TypeScript里，也有方法触发这个代码路径。也许这个函数的参数来自一个网络请求：
+
+```TypeScript
+interface LightApiResponse {
+  lightSwitchValue: boolean;
+}
+async function setLight() {
+  const response = await fetch('/light');
+  const result: LightApiResponse = await response.json();
+  setLightSwitch(result.lightSwitchValue);
+}
+```
+
+你已经声明了/light请求的结果是LightApiResponse，但没有任何事物强制执行它。如果你不了解API，并且lightSwitchValue实际上是个string，那么在运行时将向setLightSwitch传入一个字符串。或者也许这个API在你部署之后发生了变化。
+
+当你的运行时类型与声明的类型不匹配时，TypeScript会变得相当混乱，无论什么时候你都应该避免这种情况。但是要注意，**一个值可能包含声明的类型以外的其他类型。**
+
+## 你不能重载基于TypeScript类型的函数
+
+像C++这样的语言允许你定义一个函数的多个版本，只是他们的参数类型不同。这被称为函数重载（function overloading）。因为你代码里的运行时行为是独立于其TypeScript类型的，所以这个结构在TypeScript是不可能的：
+
+```TypeScript
+function add(a: number, b: number) { return a + b; }
+      // ~~~ Duplicate function implementation
+function add(a: string, b: string) { return a + b; }
+      // ~~~ Duplicate function implementation
+```
+
+TypeScript确实提供了函数重载的能力，但是它完全是在类型层面运行的。你可以为一个函数提供多重声明，但只能提供一个实现：
+
+```TypeScript
+function add(a: number, b: number): number;
+function add(a: string, b: string): string;
+
+function add(a, b) {
+  return a + b;
+}
+
+const three = add(1, 2);  // Type is number
+const twelve = add('1', '2');  // Type is string
+```
+
+add的前两个声明只提供了类型信息。当TypeScript生成JavaScript输出时，他们就被移除了，只留下实现。（如果你使用了这种重载方式，请先看一下Item 50。需要注意一些微妙之处。）
+
+## TypeScript类型对运行时性能没有影响
+
+因为类型和类型操作在生成JavaScript时会被移除，所以他们不会对运行时性能产生影响。TypeScript的静态类型是真实的零成本。下次有人以运行时开销为理由不使用TypeScript，你将清楚的知道他们是如何测试这种说法的。
+
+对此有两点需要注意：
+
+- 虽然没有运行时开销，但TypeScript编译器会引入构建时开销。TypeScript团队很重视编译器性能，而且编译通常很快，尤其是增量构建时。如果开销变得很大，你的构建工具可以使用transpile only选项来跳过类型检查。
+- 为支持较旧的运行时而产生的TypeScript代码，与原生实现相比，可能会产生性能开销。例如，如果使用生成器函数，target ES5（它比生成器早），tsc会产生一些帮助代码使其运行。与生成器的原生实现相比，可能会有一些开销。无论什么情况，这都与生成的目标和语言版本有关，并且仍然独立于类型。
+
+## 需要记住的事
+
+代码生成独立于类型系统。这意味着TypeScript类型不能影响运行时的行为或代码的性能。
+
+有类型错误的程序仍然可能生成代码（编译）。
+
+TypeScript类型在运行时不可用。为了在运行时查询类型，你需要某种方法来重构它。标记联合和属性检查是实现这一点的常用方法。一些结构比如class，同时引入了TypeScript类型和一个在运行时可用的值。
+
 
 
 
