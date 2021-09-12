@@ -5,11 +5,11 @@
 ## 目录
 - translation 重要章节翻译 
 - Chapter1 了解TypeScript
-  - item3
-  - Item4
+  - item3✅
+  - Item4对勾
 - Chapter2 TypeScript类型系统
-  - Item7
-  - Item11
+  - Item7✅
+  - Item11✅
   - Item12
   - Item14 
   - Item18
