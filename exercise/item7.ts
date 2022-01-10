@@ -1,3 +1,6 @@
+/***
+ * 基本类型
+ */
 let x: never; // never 类型，对应空集 {}
 let x1: never = 12; // 报错，因为空集不包含 12
 
@@ -18,6 +21,9 @@ declare let twelve: AB12;
 const back: AB = twelve;// 报错，{"A", "B", 12} 不是 {"A", "B"} 的子集
 
 
+/***
+ * 对象类型
+ */
 interface Person {
   name: string;
 }
@@ -33,7 +39,7 @@ const ps0: PersonSpan = {
   death: new Date('1954/06/07'),
 }; // OK
 
-const ps01: PersonSpan = {
+const ps01: PersonSpan = {// 报错，因为Person不是PersonSpan的子集
   name: 'Alan Turing',
   // birth: new Date('1912/06/23'),
   // death: new Date('1954/06/07'),
@@ -44,7 +50,7 @@ const ps02: PersonSpan = {
   birth: new Date('1912/06/23'),
   death: new Date('1954/06/07'),
   example:true,//多余属性检查
-}; // OK
+};
 
 type PersonSpan2 = Person | Lifespan;
 
@@ -53,10 +59,21 @@ const ps21: PersonSpan2 = {
   birth: new Date('1912/06/23'),
   death: new Date('1954/06/07'),
 };
-const ps22: PersonSpan2 = {
+const ps22: PersonSpan2 = {// 正确，因为Person是PersonSpan2的子集
   name: 'Alan Turing',
   // birth: new Date('1912/06/23'),
   // death: new Date('1954/06/07'),
 };
 
 type K = keyof (Person | Lifespan); // Type is never
+
+interface Vector1D { x: number; }
+interface Vector2D { x: number; y: number; }
+interface Vector3D { x: number; y: number; z: number; }
+
+const v1= {x:1,y:2,z:3};
+const v2:Vector2D=v1;
+const v3={x:1};
+const v4:Vector2D=v3;
+
+
