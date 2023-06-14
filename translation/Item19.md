@@ -138,3 +138,4 @@ function logProduct(product: Product) {
 在TypeScript没有足够的上下文推断类型的情况下，仍然需要显式类型注释。你已经在前面见过：函数参数。
 
 一些语言会基于他们最后的使用来的推断参数的类型，但TypeScript不是。在TypeScript中，一个变量的类型通常在它第一次被引入时确定的。
+
